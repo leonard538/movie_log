@@ -33,6 +33,22 @@ async function showMovieDetail(imdbID) {
     const res = await fetch(`${url}&i=${imdbID}`)
     const data = await res.json()
     console.log(data)
+
+    const chosenMovie = document.createElement('div')
+    chosenMovie.className = 'chosen-movie'
+    chosenMovie.innerHTML = `
+        <img src="${data.Poster}">
+        <p>${data.Title}</p>
+        <div>
+            <span>${data.Year}</span>
+            <span>${data.Runtime}</span>
+            <p>Directed by: ${data.Director}</p>
+        </div>
+        <p>${data.Plot}</p>
+        <p>${data.Genre}</p>
+        <p>${data.Actors}</p>
+    `
+    document.body.appendChild(chosenMovie)
 }
 
 
