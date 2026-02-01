@@ -96,6 +96,32 @@ body {
     font-weight: 400;
 }
 
+/* Header Actions */
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* Watchlist Toggle Button */
+.watchlist-btn {
+    padding: 12px 20px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    color: #ffffff;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition);
+    white-space: nowrap;
+}
+
+.watchlist-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
 /* Theme Toggle */
 #theme-toggle {
     width: 44px;
@@ -233,6 +259,7 @@ body {
     cursor: pointer;
     transition: all var(--transition);
     border: 1px solid var(--border-color);
+    position: relative;
 }
 
 .go-to-movie:hover {
@@ -267,6 +294,43 @@ body {
     color: var(--text-secondary);
     font-size: 0.85rem;
     font-weight: 400;
+}
+
+/* Add to Watchlist Button */
+.add-watchlist {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: auto;
+    padding: 8px 12px;
+    border: none;
+    background: rgba(0, 0, 0, 0.75);
+    color: #ffffff;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    border-radius: 4px;
+    opacity: 0;
+}
+
+.go-to-movie:hover .add-watchlist {
+    opacity: 1;
+}
+
+.add-watchlist:hover {
+    background: var(--accent);
+    color: var(--bg-primary);
+}
+
+/* Mobile: Always show add-watchlist button */
+@media (max-width: 768px) {
+    .add-watchlist {
+        opacity: 1;
+    }
 }
 
 /* Movie Detail Modal */
@@ -574,4 +638,140 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
     background: var(--text-secondary);
+}
+
+/* Watchlist Container */
+#watchlist-container {
+    display: none;
+    flex-direction: column;
+    gap: 0;
+    padding: 30px 20px;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+/* Empty Watchlist State */
+.empty-watchlist {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 50vh;
+    gap: 16px;
+    text-align: center;
+}
+
+.empty-watchlist .fa-bookmark {
+    font-size: 5rem;
+    color: #3a3a3a;
+}
+
+[data-theme="light"] .empty-watchlist .fa-bookmark {
+    color: #c0c0c0;
+}
+
+.empty-watchlist h3 {
+    font-size: 1.3rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.empty-watchlist p {
+    font-size: 1rem;
+    color: var(--text-muted);
+}
+
+/* Watchlist Card - Horizontal Layout */
+.watch-card {
+    display: flex;
+    gap: 20px;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--border-color);
+    cursor: pointer;
+    transition: background var(--transition);
+}
+
+.watch-card:hover {
+    background: var(--accent-muted);
+}
+
+.watch-card:last-child {
+    border-bottom: none;
+}
+
+.watch-card img {
+    width: 100px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 6px;
+    flex-shrink: 0;
+}
+
+.watch-card-details {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.watch-card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.watch-card-header .movie-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0;
+    color: var(--text-primary);
+}
+
+.watch-card-header .movie-rating {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.watch-card-meta {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.watch-card-meta .movie-runtime,
+.watch-card-meta .movie-genre {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.watch-card .movie-plot {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Remove from Watchlist Button */
+.remove-watchlist {
+    padding: 6px 12px;
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all var(--transition);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border-radius: 4px;
+}
+
+.remove-watchlist:hover {
+    background: #dc3545;
+    color: white;
 }

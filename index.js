@@ -2,7 +2,10 @@ const API_KEY = '14906382'
 const url = `http://www.omdbapi.com/?apikey=${API_KEY}`
 const resultContainer = document.getElementById('result')
 const watchlistContainer = document.getElementById('watchlist-container')
+const searchContainer = document.querySelector('.search-container')
+const watchlistToggle = document.getElementById('watchlist-toggle')
 let watchlistArr = []
+let isWatchlistMode = false
 
 // Theme toggle functionality
 const themeToggle = document.getElementById('theme-toggle')
@@ -18,6 +21,29 @@ themeToggle.addEventListener('click', () => {
     html.setAttribute('data-theme', newTheme)
     localStorage.setItem('theme', newTheme)
 })
+
+// Watchlist toggle functionality
+watchlistToggle.addEventListener('click', () => {
+    isWatchlistMode = !isWatchlistMode
+    toggleWatchlistMode()
+})
+
+function toggleWatchlistMode() {
+    if (isWatchlistMode) {
+        // Switch to watchlist mode
+        watchlistToggle.textContent = 'Search for movies'
+        searchContainer.style.display = 'none'
+        resultContainer.style.display = 'none'
+        watchlistContainer.style.display = 'flex'
+        renderWatchlist()
+    } else {
+        // Switch to search mode
+        watchlistToggle.textContent = 'My Watchlist'
+        searchContainer.style.display = 'flex'
+        resultContainer.style.display = ''
+        watchlistContainer.style.display = 'none'
+    }
+}
 
 document.getElementById('search-btn').addEventListener('click', fetchMovie)
 document.getElementById('search-input').addEventListener('keypress', (e) => {
@@ -108,21 +134,53 @@ resultContainer.addEventListener('click', async (e) => {
 })
 
 watchlistContainer.addEventListener('click', (e) => {
-    const parent = e.target.closest('watch-card')
+    const parent = e.target.closest('.watch-card')
     if(!parent) return 
+
+    // Handle remove from watchlist
+    if(e.target.closest('.remove-watchlist')) {
+        const movieId = parent.dataset.id
+        watchlistArr = watchlistArr.filter(movie => movie.imdbID !== movieId)
+        renderWatchlist()
+        return
+    }
+
     showMovieDetail(parent.dataset.id)
 })
 
 function renderWatchlist() {
+    if (watchlistArr.length === 0) {
+        watchlistContainer.innerHTML = `
+            <div class="empty-watchlist">
+                <i class="fa-solid fa-bookmark"></i>
+                <h3>Your watchlist is empty</h3>
+                <p>Search for movies and add them to your watchlist</p>
+            </div>
+        `
+        return
+    }
 
-    watchlistArr.forEach( (movie) => {
-        document.createElement('div').innerHTML = `
+    watchlistContainer.innerHTML = ''
+    watchlistArr.forEach((movie) => {
+        const posterSrc = movie.Poster !== 'N/A' ? movie.Poster : './img/poster_na.png'
+        watchlistContainer.innerHTML += `
             <div class="watch-card" data-id="${movie.imdbID}">
+                <img src="${posterSrc}" alt="${movie.Title}">
+                <div class="watch-card-details">
+                    <div class="watch-card-header">
+                        <h3 class="movie-title">${movie.Title}</h3>
+                        <span class="movie-rating">⭐ ${movie.imbdRating || 'N/A'}</span>
+                    </div>
+                    <div class="watch-card-meta">
+                        <span class="movie-runtime">${movie.Runtime || 'N/A'}</span>
+                        <span class="movie-genre">${movie.Genre || 'N/A'}</span>
+                        <button class="remove-watchlist"><i class="fa-solid fa-circle-minus"></i> Remove</button>
+                    </div>
+                    <p class="movie-plot">${movie.Plot || 'No plot available.'}</p>
+                </div>
             </div>
         `
     })
-
-    
 }
 
 async function showMovieDetail(imdbID) {
