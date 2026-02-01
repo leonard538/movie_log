@@ -1,6 +1,8 @@
 const API_KEY = '14906382'
 const url = `http://www.omdbapi.com/?apikey=${API_KEY}`
 const resultContainer = document.getElementById('result')
+const watchlistContainer = document.getElementById('watchlist-container')
+let watchlistArr = []
 
 // Theme toggle functionality
 const themeToggle = document.getElementById('theme-toggle')
@@ -46,7 +48,7 @@ async function fetchMovie() {
 
         resultContainer.innerHTML = ''
         data.Search.forEach((movie) => {
-            const posterSrc = movie.Poster !== 'N/A' 
+            const posterSrc = movie.Poster !== 'N/A'
                 ? movie.Poster 
                 : './img/poster_na.png'
             
@@ -57,6 +59,7 @@ async function fetchMovie() {
                         <p class="movie-title">${movie.Title}</p>
                         <p class="movie-year">${movie.Year}</p>
                     </div>
+                    <button class="add-watchlist"><i class="fa-solid fa-circle-plus"></i> Watchlist</button>
                 </div>
             `
         })
@@ -70,12 +73,57 @@ async function fetchMovie() {
     }
 }
 
-resultContainer.addEventListener('click', (e) => {
-    const goToMovie = e.target.closest('.go-to-movie')
-    if (!goToMovie) return
+// Add to watchlist or View more info
+resultContainer.addEventListener('click', async (e) => {
+    const parent = e.target.closest('.go-to-movie')
+    if (!parent) return
 
-    showMovieDetail(goToMovie.dataset.id)
+    if(e.target.classList.contains('add-watchlist')) {
+        console.log(parent)
+        
+        try {
+            const res = await fetch(`${url}&i=${parent.dataset.id}`)
+            const data = await res.json()
+            
+            watchlistArr.unshift({ Poster: data.Poster,
+                    Title: data.Title,
+                    Year: data.Year,
+                    Runtime: data.Runtime,
+                    Rated: data.Rated,
+                    Director: data.Director,
+                    Plot: data.Plot,
+                    Genre: data.Genre,
+                    Actors: data.Actors,
+                    imbdRating: data.imdbRating,
+                    imdbID: data.imdbID
+                })
+        } catch (error) {
+            console.error('Error fetching movie details:', error)
+        }
+
+    } else {
+        showMovieDetail(parent.dataset.id)
+    }
+    
 })
+
+watchlistContainer.addEventListener('click', (e) => {
+    const parent = e.target.closest('watch-card')
+    if(!parent) return 
+    showMovieDetail(parent.dataset.id)
+})
+
+function renderWatchlist() {
+
+    watchlistArr.forEach( (movie) => {
+        document.createElement('div').innerHTML = `
+            <div class="watch-card" data-id="${movie.imdbID}">
+            </div>
+        `
+    })
+
+    
+}
 
 async function showMovieDetail(imdbID) {
     try {

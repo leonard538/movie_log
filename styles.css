@@ -148,7 +148,7 @@ body {
 
 #search-input {
     flex: 1;
-    max-width: 480px;
+    max-width: 620px;
     min-width: 200px;
     padding: 14px 20px;
     border: 2px solid var(--border-color);
