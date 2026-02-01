@@ -3,52 +3,123 @@ const url = `http://www.omdbapi.com/?apikey=${API_KEY}`
 const resultContainer = document.getElementById('result')
 
 document.getElementById('search-btn').addEventListener('click', fetchMovie)
+document.getElementById('search-input').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') fetchMovie()
+})
 
 async function fetchMovie() {
     const searchValue = document.getElementById('search-input').value
 
     if (!searchValue) return
 
-    const res = await fetch(`${url}&s=${encodeURIComponent(searchValue)}`)
-    const data = await res.json()
+    // Show loading state
+    resultContainer.innerHTML = '<div class="loading"></div>'
 
-    data.Search.forEach((movie, index) => {
-        resultContainer.innerHTML += `
-            <div class="go-to-movie" data-index="${index}" id="${movie.imdbID}">
-                <img src=${movie.Poster}>
-                <p>${movie.Title}</p>
-                <p>${movie.Year}</p>
+    try {
+        const res = await fetch(`${url}&s=${encodeURIComponent(searchValue)}`)
+        const data = await res.json()
+
+        if (data.Response === 'False') {
+            resultContainer.innerHTML = `
+                <div class="no-results">
+                    <h3>No movies found</h3>
+                    <p>Try searching for something else</p>
+                </div>
+            `
+            return
+        }
+
+        resultContainer.innerHTML = ''
+        data.Search.forEach((movie) => {
+            const posterSrc = movie.Poster !== 'N/A' 
+                ? movie.Poster 
+                : './img/poster_na.png'
+            
+            resultContainer.innerHTML += `
+                <div class="go-to-movie" data-id="${movie.imdbID}">
+                    <img src="${posterSrc}" alt="${movie.Title}">
+                    <div class="movie-info">
+                        <p class="movie-title">${movie.Title}</p>
+                        <p class="movie-year">${movie.Year}</p>
+                    </div>
+                </div>
+            `
+        })
+    } catch (error) {
+        resultContainer.innerHTML = `
+            <div class="no-results">
+                <h3>Something went wrong</h3>
+                <p>Please try again later</p>
             </div>
         `
-    }); 
+    }
 }
 
 resultContainer.addEventListener('click', (e) => {
     const goToMovie = e.target.closest('.go-to-movie')
+    if (!goToMovie) return
 
-    showMovieDetail(goToMovie.id)
+    showMovieDetail(goToMovie.dataset.id)
 })
 
 async function showMovieDetail(imdbID) {
-    const res = await fetch(`${url}&i=${imdbID}`)
-    const data = await res.json()
-    console.log(data)
+    try {
+        const res = await fetch(`${url}&i=${imdbID}`)
+        const data = await res.json()
 
-    const chosenMovie = document.createElement('div')
-    chosenMovie.className = 'chosen-movie'
-    chosenMovie.innerHTML = `
-        <img src="${data.Poster}">
-        <p>${data.Title}</p>
-        <div>
-            <span>${data.Year}</span>
-            <span>${data.Runtime}</span>
-            <p>Directed by: ${data.Director}</p>
-        </div>
-        <p>${data.Plot}</p>
-        <p>${data.Genre}</p>
-        <p>${data.Actors}</p>
-    `
-    document.body.appendChild(chosenMovie)
+        // Remove existing modal if any
+        const existingModal = document.querySelector('.modal-overlay')
+        if (existingModal) existingModal.remove()
+
+        const posterSrc = data.Poster !== 'N/A' 
+            ? data.Poster 
+            : './img/poster_na.png'
+
+        const genres = data.Genre.split(', ').map(g => `<span>${g}</span>`).join('')
+
+        const modalOverlay = document.createElement('div')
+        modalOverlay.className = 'modal-overlay'
+        modalOverlay.innerHTML = `
+            <div class="chosen-movie">
+                <button class="close-btn">&times;</button>
+                <img class="movie-poster" src="${posterSrc}" alt="${data.Title}">
+                <div class="movie-details">
+                    <h2 class="movie-title">${data.Title}</h2>
+                    <div class="movie-meta">
+                        <span>${data.Year}</span>
+                        <span>${data.Runtime}</span>
+                        <span>${data.Rated}</span>
+                    </div>
+                    <p class="movie-director"><strong>Director:</strong> ${data.Director}</p>
+                    <p class="movie-plot">${data.Plot}</p>
+                    <div class="movie-genre">${genres}</div>
+                    <p class="movie-cast"><strong>Cast:</strong> ${data.Actors}</p>
+                    <div class="movie-rating">
+                        <span class="rating-badge">⭐ ${data.imdbRating}</span>
+                    </div>
+                </div>
+            </div>
+        `
+
+        document.body.appendChild(modalOverlay)
+
+        // Close modal on overlay click or close button
+        modalOverlay.addEventListener('click', (e) => {
+            if (e.target === modalOverlay || e.target.classList.contains('close-btn')) {
+                modalOverlay.remove()
+            }
+        })
+
+        // Close on escape key
+        document.addEventListener('keydown', function closeOnEscape(e) {
+            if (e.key === 'Escape') {
+                modalOverlay.remove()
+                document.removeEventListener('keydown', closeOnEscape)
+            }
+        })
+    } catch (error) {
+        console.error('Error fetching movie details:', error)
+    }
 }
 
 
