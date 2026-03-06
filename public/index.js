@@ -1,4 +1,3 @@
-const url = `http://www.omdbapi.com/?apikey=${API_KEY}`
 const resultContainer = document.getElementById('result')
 const watchlistContainer = document.getElementById('watchlist-container')
 const searchContainer = document.querySelector('.search-container')
@@ -58,7 +57,7 @@ async function fetchMovie() {
     resultContainer.innerHTML = '<div class="loading"></div>'
 
     try {
-        const res = await fetch(`${url}&s=${encodeURIComponent(searchValue)}`)
+        const res = await fetch(`/api/search?s=${encodeURIComponent(searchValue)}`)
         const data = await res.json()
 
         if (data.Response === 'False') {
@@ -107,7 +106,7 @@ resultContainer.addEventListener('click', async (e) => {
         console.log(parent)
         
         try {
-            const res = await fetch(`${url}&i=${parent.dataset.id}`)
+            const res = await fetch(`api/movie?i=${parent.dataset.id}`)
             const data = await res.json()
             
             watchlistArr.unshift({ Poster: data.Poster,
@@ -184,7 +183,7 @@ function renderWatchlist() {
 
 async function showMovieDetail(imdbID) {
     try {
-        const res = await fetch(`${url}&i=${imdbID}`)
+        const res = await fetch(`api/movie?i=${imdbID}`)
         const data = await res.json()
 
         // Remove existing modal if any

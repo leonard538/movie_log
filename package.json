@@ -6,6 +6,7 @@
   "version": "1.0.0",
   "description": "A sleek movie search and watchlist application that lets you discover, explore, and save your favorite films.  \r [deployed app is not available yet]",
   "main": "server.js",
+  "type": "module",
   "devDependencies": {},
   "scripts": {
     "start": "node server.js"
