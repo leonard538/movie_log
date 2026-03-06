@@ -1,4 +1,3 @@
-const API_KEY = '14906382'
 const url = `http://www.omdbapi.com/?apikey=${API_KEY}`
 const resultContainer = document.getElementById('result')
 const watchlistContainer = document.getElementById('watchlist-container')
