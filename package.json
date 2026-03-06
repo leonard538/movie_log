@@ -1,0 +1,23 @@
+{
+  "dependencies": {
+    "dotenv": "^17.3.1"
+  },
+  "name": "movie_watchlist",
+  "version": "1.0.0",
+  "description": "A sleek movie search and watchlist application that lets you discover, explore, and save your favorite films.  \r [deployed app is not available yet]",
+  "main": "server.js",
+  "devDependencies": {},
+  "scripts": {
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/leonard538/movie_log.git"
+  },
+  "author": "Leonard",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/leonard538/movie_log/issues"
+  },
+  "homepage": "https://github.com/leonard538/movie_log#readme"
+}
