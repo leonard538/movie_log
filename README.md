@@ -1,6 +1,7 @@
 # Movie Watchlist
 
-A sleek movie search and watchlist application that lets you discover, explore, and save your favorite films.
+A sleek movie search and watchlist application that lets you discover, explore, and save your favorite films.  
+[deployed app is not available yet]
 
 ## Features
 
