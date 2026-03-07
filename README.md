@@ -13,11 +13,13 @@ A sleek movie search and watchlist application that lets you discover, explore, 
 
 ## Tech Stack
 
+- **Node.js** - Backend HTTP server with API proxy
 - **HTML5** - Semantic markup structure
 - **CSS3** - Custom properties (CSS variables), Flexbox, responsive design
 - **JavaScript (ES6+)** - Async/await, modules, DOM manipulation, Local Storage
 - **OMDB API** - Movie data and poster images
 - **Font Awesome** - Icons
+- **dotenv** - Environment variable management
 
 ## How to Use
 
@@ -32,18 +34,40 @@ A sleek movie search and watchlist application that lets you discover, explore, 
 
 ```
 movie_watchlist/
-├── index.html      # Main HTML file
-├── index.js        # JavaScript logic
-├── styles.css      # Styling
-├── img/            # Images (banner, placeholder poster)
-└── README.md       # Project documentation
+├── server.js           # Node.js HTTP server with API routes
+├── package.json        # Project dependencies and scripts
+├── .env                # Environment variables (API_KEY)
+├── README.md           # Project documentation
+├── public/
+│   ├── index.html      # Main HTML file
+│   ├── index.js        # Frontend JavaScript logic
+│   ├── styles.css      # Styling
+│   └── img/            # Images (banner, placeholder poster)
+└── utils/
+    └── getContentType.js   # MIME type utility
 ```
+
+## API Endpoints
+
+- `GET /api/search?s={query}` - Search for movies by title
+- `GET /api/movie?i={imdbID}` - Get detailed movie information by IMDB ID
 
 ## Getting Started
 
 1. Clone or download the repository
-2. Open `index.html` in your browser
-3. Start searching for movies!
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Create a `.env` file in the root directory with your OMDB API key:
+   ```
+   API_KEY=your_omdb_api_key
+   ```
+4. Start the server:
+   ```bash
+   npm start
+   ```
+5. Open `http://localhost:8000` in your browser
 
 ---
 
