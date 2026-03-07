@@ -59,6 +59,8 @@ body {
     border-radius: 8px;
     margin-bottom: 50px;
     padding-bottom: 25px;
+    min-height: 310px;
+    box-sizing: border-box;
 }
 
 .hero::before {
@@ -685,7 +687,7 @@ body {
 .watch-card {
     display: flex;
     gap: 20px;
-    padding: 20px 0;
+    padding: 20px 5px;
     border-bottom: 1px solid var(--border-color);
     cursor: pointer;
     transition: background var(--transition);

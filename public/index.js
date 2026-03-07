@@ -72,13 +72,18 @@ async function fetchMovie() {
 
         resultContainer.innerHTML = ''
         data.Search.forEach((movie) => {
+            const defaultPoster = './img/poster_na.png'
             const posterSrc = movie.Poster !== 'N/A'
                 ? movie.Poster 
-                : './img/poster_na.png'
+                : defaultPoster
+            console.log(posterSrc)
             
             resultContainer.innerHTML += `
                 <div class="go-to-movie" data-id="${movie.imdbID}">
-                    <img src="${posterSrc}" alt="${movie.Title}">
+                    <img 
+                        src="${posterSrc}"  
+                        onerror="this.onerror=null; this.src='${defaultPoster}'"
+                        alt="${movie.Title}">
                     <div class="movie-info">
                         <p class="movie-title">${movie.Title}</p>
                         <p class="movie-year">${movie.Year}</p>
@@ -106,7 +111,7 @@ resultContainer.addEventListener('click', async (e) => {
         console.log(parent)
         
         try {
-            const res = await fetch(`api/movie?i=${parent.dataset.id}`)
+            const res = await fetch(`/api/movie?i=${parent.dataset.id}`)
             const data = await res.json()
             
             watchlistArr.unshift({ Poster: data.Poster,
@@ -160,10 +165,15 @@ function renderWatchlist() {
 
     watchlistContainer.innerHTML = ''
     watchlistArr.forEach((movie) => {
-        const posterSrc = movie.Poster !== 'N/A' ? movie.Poster : './img/poster_na.png'
+        const defaultPoster = './img/poster_na.png'
+        const posterSrc = movie.Poster !== 'N/A' ? movie.Poster : defaultPoster
+
         watchlistContainer.innerHTML += `
             <div class="watch-card" data-id="${movie.imdbID}">
-                <img src="${posterSrc}" alt="${movie.Title}">
+                <img 
+                    src="${posterSrc}" 
+                    onerror="this.onerror=null; this.src='${defaultPoster}'"
+                    alt="${movie.Title}">
                 <div class="watch-card-details">
                     <div class="watch-card-header">
                         <h3 class="movie-title">${movie.Title}</h3>
@@ -183,13 +193,14 @@ function renderWatchlist() {
 
 async function showMovieDetail(imdbID) {
     try {
-        const res = await fetch(`api/movie?i=${imdbID}`)
+        const res = await fetch(`/api/movie?i=${imdbID}`)
         const data = await res.json()
 
         // Remove existing modal if any
         const existingModal = document.querySelector('.modal-overlay')
         if (existingModal) existingModal.remove()
 
+        const defaultPoster = './img/poster_na.png'
         const posterSrc = data.Poster !== 'N/A' 
             ? data.Poster 
             : './img/poster_na.png'
@@ -201,7 +212,10 @@ async function showMovieDetail(imdbID) {
         modalOverlay.innerHTML = `
             <div class="chosen-movie">
                 <button class="close-btn">&times;</button>
-                <img class="movie-poster" src="${posterSrc}" alt="${data.Title}">
+                <img class="movie-poster" 
+                    src="${posterSrc}" 
+                    onerror="this.onerror=null; this.src='${defaultPoster}'"
+                    alt="${data.Title}">
                 <div class="movie-details">
                     <h2 class="movie-title">${data.Title}</h2>
                     <div class="movie-meta">
