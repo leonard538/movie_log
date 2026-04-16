@@ -1,15 +1,12 @@
 {
-  "dependencies": {
-    "dotenv": "^17.3.1"
-  },
   "name": "movie_watchlist",
   "version": "1.0.0",
-  "description": "A sleek movie search and watchlist application that lets you discover, explore, and save your favorite films.  \r [deployed app is not available yet]",
-  "main": "server.js",
-  "type": "module",
-  "devDependencies": {},
+  "private": true,
+  "description": "Movie watchlist app split into deployable frontend and backend folders",
   "scripts": {
-    "start": "node server.js"
+    "install:backend": "npm --prefix backend install",
+    "start:backend": "npm --prefix backend start",
+    "dev:backend": "npm --prefix backend run dev"
   },
   "repository": {
     "type": "git",

@@ -1,74 +1,100 @@
 # Movie Watchlist
 
-A sleek movie search and watchlist application that lets you discover, explore, and save your favorite films.  
-[deployed app is not available yet]
+Movie search and watchlist app split into frontend and backend folders so each can be deployed to different platforms.
 
 ## Features
 
-- **Movie Search** - Search for movies using the OMDB API
-- **Watchlist** - Save movies to your personal watchlist for later viewing
-- **Movie Details** - View detailed information including rating, runtime, director, cast, and plot
-- **Dark/Light Theme** - Toggle between dark and light modes with theme persistence
-- **Responsive Design** - Works seamlessly across desktop and mobile devices
+- Search movies from OMDB
+- Save movies to a local watchlist
+- View detailed movie info in a modal
+- Dark and light theme toggle with persistence
+- Responsive UI
 
-## Tech Stack
-
-- **Node.js** - Backend HTTP server with API proxy
-- **HTML5** - Semantic markup structure
-- **CSS3** - Custom properties (CSS variables), Flexbox, responsive design
-- **JavaScript (ES6+)** - Async/await, modules, DOM manipulation, Local Storage
-- **OMDB API** - Movie data and poster images
-- **Font Awesome** - Icons
-- **dotenv** - Environment variable management
-
-## How to Use
-
-1. Enter a movie title in the search bar
-2. Click "Search" or press Enter
-3. Browse through the search results
-4. Click on a movie card to view more details
-5. Click the "Watchlist" button to save a movie
-6. Access your saved movies by clicking "My Watchlist"
-
-## Project Structure
+## Production-Ready Structure
 
 ```
 movie_watchlist/
-├── server.js           # Node.js HTTP server with API routes
-├── package.json        # Project dependencies and scripts
-├── .env                # Environment variables (API_KEY)
-├── README.md           # Project documentation
-├── public/
-│   ├── index.html      # Main HTML file
-│   ├── index.js        # Frontend JavaScript logic
-│   ├── styles.css      # Styling
-│   └── img/            # Images (banner, placeholder poster)
-└── utils/
-    └── getContentType.js   # MIME type utility
+├── backend/
+│   ├── package.json
+│   ├── .env.example
+│   └── server.js
+├── frontend/
+│   └── public/
+│       ├── config.js
+│       ├── index.html
+│       ├── index.js
+│       ├── styles.css
+│       └── img/
+├── package.json
+└── README.md
 ```
 
-## API Endpoints
+## Backend Setup (Deploy Separately)
 
-- `GET /api/search?s={query}` - Search for movies by title
-- `GET /api/movie?i={imdbID}` - Get detailed movie information by IMDB ID
+Backend is an API service only.
 
-## Getting Started
-
-1. Clone or download the repository
+1. Go to `backend`.
 2. Install dependencies:
-   ```bash
-   npm install
-   ```
-3. Create a `.env` file in the root directory with your OMDB API key:
-   ```
-   API_KEY=your_omdb_api_key
-   ```
-4. Start the server:
-   ```bash
-   npm start
-   ```
-5. Open `http://localhost:8000` in your browser
 
----
+```bash
+npm install
+```
 
-This is a challenge project from [Scrimba](https://scrimba.com/?via=u42c5f8e) - an interactive learning platform for developers.
+3. Create `.env` from `.env.example` and set:
+
+```env
+API_KEY=your_omdb_api_key
+PORT=8000
+FRONTEND_ORIGIN=https://your-frontend-domain.com
+```
+
+`FRONTEND_ORIGIN` can be `*` for open CORS or a comma-separated list of allowed frontend origins.
+
+4. Run locally:
+
+```bash
+npm run dev
+```
+
+or production start:
+
+```bash
+npm start
+```
+
+### Backend Endpoints
+
+- `GET /health`
+- `GET /api/search?s={query}`
+- `GET /api/movie?i={imdbID}`
+
+## Frontend Setup (Deploy Separately)
+
+Frontend is a static app in `frontend/public`.
+
+Set your deployed backend URL in `frontend/public/config.js`:
+
+```js
+window.APP_CONFIG = {
+  API_BASE_URL: "https://your-backend-domain.com"
+};
+```
+
+If `API_BASE_URL` is empty, the app uses same-origin requests.
+
+## Root Helper Scripts
+
+From repository root:
+
+```bash
+npm run install:backend
+npm run dev:backend
+npm run start:backend
+```
+
+## Deployment Notes
+
+- Deploy `backend` to a Node.js host (Render, Railway, Fly.io, etc.)
+- Deploy `frontend/public` to a static host (Netlify, Vercel static, Cloudflare Pages, etc.)
+- Update `frontend/public/config.js` with the deployed backend URL
+- Set backend `FRONTEND_ORIGIN` to the deployed frontend domain(s)

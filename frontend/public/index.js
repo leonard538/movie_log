@@ -5,6 +5,31 @@ const watchlistToggle = document.getElementById('watchlist-toggle')
 let watchlistArr = []
 let isWatchlistMode = false
 
+const configuredApiBaseUrl = window.APP_CONFIG?.API_BASE_URL?.trim() || ''
+const API_BASE_URL = configuredApiBaseUrl.replace(/\/$/, '')
+
+function buildApiUrl(pathname, query = {}) {
+    const cleanPath = pathname.startsWith('/') ? pathname : `/${pathname}`
+
+    if (API_BASE_URL) {
+        const url = new URL(`${API_BASE_URL}${cleanPath}`)
+        Object.entries(query).forEach(([key, value]) => {
+            if (value !== undefined && value !== null && value !== '') {
+                url.searchParams.set(key, value)
+            }
+        })
+        return url.toString()
+    }
+
+    const url = new URL(cleanPath, window.location.origin)
+    Object.entries(query).forEach(([key, value]) => {
+        if (value !== undefined && value !== null && value !== '') {
+            url.searchParams.set(key, value)
+        }
+    })
+    return url.toString()
+}
+
 // Theme toggle functionality
 const themeToggle = document.getElementById('theme-toggle')
 const html = document.documentElement
@@ -57,7 +82,7 @@ async function fetchMovie() {
     resultContainer.innerHTML = '<div class="loading"></div>'
 
     try {
-        const res = await fetch(`/api/search?s=${encodeURIComponent(searchValue)}`)
+        const res = await fetch(buildApiUrl('/api/search', { s: searchValue }))
         const data = await res.json()
 
         if (data.Response === 'False') {
@@ -76,7 +101,6 @@ async function fetchMovie() {
             const posterSrc = movie.Poster !== 'N/A'
                 ? movie.Poster 
                 : defaultPoster
-            console.log(posterSrc)
             
             resultContainer.innerHTML += `
                 <div class="go-to-movie" data-id="${movie.imdbID}">
@@ -107,11 +131,10 @@ resultContainer.addEventListener('click', async (e) => {
     const parent = e.target.closest('.go-to-movie')
     if (!parent) return
 
-    if(e.target.classList.contains('add-watchlist')) {
-        console.log(parent)
+    if(e.target.closest('.add-watchlist')) {
         
         try {
-            const res = await fetch(`/api/movie?i=${parent.dataset.id}`)
+            const res = await fetch(buildApiUrl('/api/movie', { i: parent.dataset.id }))
             const data = await res.json()
             
             watchlistArr.unshift({ Poster: data.Poster,
@@ -177,7 +200,10 @@ function renderWatchlist() {
                 <div class="watch-card-details">
                     <div class="watch-card-header">
                         <h3 class="movie-title">${movie.Title}</h3>
-                        <span class="movie-rating">⭐ ${movie.imbdRating || 'N/A'}</span>
+                        <span class="movie-rating">
+                            <i class="fa-solid fa-star"></i> 
+                            ${movie.imbdRating || 'N/A'}
+                        </span>
                     </div>
                     <div class="watch-card-meta">
                         <span class="movie-runtime">${movie.Runtime || 'N/A'}</span>
@@ -193,7 +219,7 @@ function renderWatchlist() {
 
 async function showMovieDetail(imdbID) {
     try {
-        const res = await fetch(`/api/movie?i=${imdbID}`)
+        const res = await fetch(buildApiUrl('/api/movie', { i: imdbID }))
         const data = await res.json()
 
         // Remove existing modal if any
@@ -228,7 +254,10 @@ async function showMovieDetail(imdbID) {
                     <div class="movie-genre">${genres}</div>
                     <p class="movie-cast"><strong>Cast:</strong> ${data.Actors}</p>
                     <div class="movie-rating">
-                        <span class="rating-badge">⭐ ${data.imdbRating}</span>
+                        <span class="rating-badge">
+                            <i class="fa-solid fa-star"></i>
+                            ${data.imdbRating}
+                        </span>
                     </div>
                 </div>
             </div>
@@ -255,7 +284,7 @@ async function showMovieDetail(imdbID) {
     }
 }
 
-
+// sample result
 // Actors:"Christian Bale, Michael Caine, Ken Watanabe"
 // Awards:"Nominated for 1 Oscar. 15 wins & 79 nominations total"
 // BoxOffice:"$206,863,479"
