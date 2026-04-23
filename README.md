@@ -10,6 +10,15 @@ Movie search and watchlist app split into frontend and backend folders so each c
 - Dark and light theme toggle with persistence
 - Responsive UI
 
+## Tech Stack
+
+- Frontend: HTML5, CSS3, Vanilla JavaScript (ES Modules)
+- Backend: Node.js (native `http` server, ES Modules)
+- API Integration: OMDb API
+- Environment Management: `dotenv`
+- Icons: Font Awesome (CDN)
+- Tooling: npm scripts for backend install/start/dev workflow
+
 ## Production-Ready Structure
 
 ```
